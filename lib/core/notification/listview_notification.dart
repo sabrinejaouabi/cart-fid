@@ -15,13 +15,23 @@ class _listviewnotificationState extends State<listviewnotification> {
   getnotificationdata()async{
     var response =await http.get(Uri.https('627521036d3bc09e106aeeb4.mockapi.io/api/v1/','notification'));
     var jsonData=jsonDecode(response.body);
+
     List<NotificationList> Notif=[];
     for(var no in jsonData){
-      NotificationList notif =NotificationList(no["name"],no["img"],no["date"],no["descr"],no["id"]);
+      NotificationList notif =NotificationList(name: no["name"],img:no["img"],date:no["date"],descr:no["descr"]);
       Notif.add(notif);
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        return NotificationList.fromJson(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        throw Exception('Failed to load list');
+      }
     }
-    print(Notif.length);
-    return Notif;
+   // print(Notif.length);
+   // return Notif;
   }
   /*var titlelist = [
     " Carte Fid",
@@ -49,66 +59,99 @@ class _listviewnotificationState extends State<listviewnotification> {
     //final height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width * 0.6;
     return Container(
+    child: Card(
+    child:FutureBuilder(builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      if(snapshot.data==null){
+        return Container(
+          child: Text('Loding...'),
 
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount:imglist.length,
-          itemBuilder: (BuildContext context , int index){
-            return GestureDetector(
-              onTap: (){
-                showDialogFunc(context,imglist[index],titlelist[index],description[index]);
-              },
-              child:Card(
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(15.0),
-                      child: Image.asset(imglist[index]),
-                    ),
+        );
+      }
+      else {
+        return ListView.builder(
+            shrinkWrap: true,
+            itemCount:snapshot.data.length,
+            itemBuilder: ( context , index){
+              return GestureDetector(
+                onTap: (){
+                  showDialogFunc(
+                      context,
+                      snapshot.data[index].img,
+                      snapshot.data[index].name,
+                      snapshot.data[index].date,
+                      snapshot.data[index].descr);
+                },
+                child:Card(
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15.0),
+                        child: Image.asset(snapshot.data[index].img),
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                        Text(
-                        titlelist[index],
-                        style: GoogleFonts.poppins(
-                          textStyle: TextStyle(
-                              color: Color(0xFF3F414E),
-                              fontWeight: FontWeight.w500,
-                              fontSize:16),
-                        ),
-                        ),
+                          Text(
+                            snapshot.data[index].name,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                  color: Color(0xFF3F414E),
+                                  fontWeight: FontWeight.w500,
+                                  fontSize:16),
+                            ),
+                          ),
+                          Spacer(),
+                            Text(
+                                 snapshot.data[index].date,
+                               style: GoogleFonts.poppins(
+                                   textStyle: TextStyle(
+                                  color: Color(0xFF3F414E),
+                                 fontWeight: FontWeight.w500,
+                                 fontSize:16),
+                ),
+              ),
                           SizedBox(
                             height: 10,
                           ),
-                      Container(
-                        width: width,
-                        child: Text(
-                          description[index],
-                          //maxLines:2,
-                            style: GoogleFonts.poppins(
-                              textStyle: TextStyle(
-                                  color: Color(0xFF5D5F6D),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize:12),
+                          Container(
+                            width: width,
+                            child: Text(
+                              snapshot.data[index].descr,
+                              //maxLines:2,
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    color: Color(0xFF5D5F6D),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize:12),
+                              ),
                             ),
-                        ),
 
-                      ),
+                          ),
                           SizedBox(height: 15,),
                         ],
                       ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          }
-      ),
+              );
+            }
+        );
+
+  }
+      }
+
+
+    )
+
+    ),
+
+
 
     );
   }
 }
 
- showDialogFunc(BuildContext context, imgList, titleList, descList) {
+showDialogFunc(BuildContext context, img, name,data, descr) {
   return showDialog(
     context: context,
     builder: (context){
@@ -128,7 +171,7 @@ class _listviewnotificationState extends State<listviewnotification> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(5),
                   child: Image.asset(
-                    imgList,
+                    img,
                     width: 200,
                     height: 200,
                   ),
@@ -137,7 +180,7 @@ class _listviewnotificationState extends State<listviewnotification> {
                   height: 10,
                 ),
                 Text(
-                 titleList,
+                 name,
                   style: GoogleFonts.poppins(
                     textStyle: TextStyle(
                         color: Color(0xFF3F414E),
@@ -153,7 +196,7 @@ class _listviewnotificationState extends State<listviewnotification> {
                   child: Align(
                     alignment: Alignment.center,
                     child: Text(
-                      descList,
+                      descr,
                      // maxLines: 3,
                       style: GoogleFonts.poppins(
                         textStyle: TextStyle(
