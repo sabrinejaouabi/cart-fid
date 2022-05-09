@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1711414176",
+    "project_id": "cartfid-821b6",
+    "storage_bucket": "cartfid-821b6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1711414176:android:d694c6fd35e22a0b61a2c5",
+        "android_client_info": {
+          "package_name": "sl.sabrine.crt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1711414176-vvqf06e7nb0o9pkeop5r57edu1s924kr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANLQ947dxKiasNqUwu_2mqaySdCGoGGBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1711414176-vvqf06e7nb0o9pkeop5r57edu1s924kr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
