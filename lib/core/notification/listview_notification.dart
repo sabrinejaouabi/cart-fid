@@ -13,23 +13,28 @@ class listviewnotification extends StatefulWidget {
 }
 class _listviewnotificationState extends State<listviewnotification> {
   getnotificationdata()async{
-    var response =await http.get(Uri.https('627521036d3bc09e106aeeb4.mockapi.io/api/v1/','notification'));
-    var jsonData=jsonDecode(response.body);
+    try{
+      var response =await http.get(Uri.https('627521036d3bc09e106aeeb4.mockapi.io','/api/v1/notification'));
+      var jsonData=jsonDecode(response.body);
 
-    List<NotificationList> Notif=[];
-    for(var no in jsonData){
-      NotificationList notif =NotificationList(name: no["name"],img:no["img"],date:no["date"],descr:no["descr"]);
-      Notif.add(notif);
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        return NotificationList.fromJson(jsonDecode(response.body));
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to load list');
+      List<NotificationList> Notif=[];
+      for(var no in jsonData){
+        NotificationList notif =NotificationList(name: no["name"],img:no["img"],date:no["date"],descr:no["descr"]);
+        Notif.add(notif);
+        if (response.statusCode == 200) {
+          // If the server did return a 200 OK response,
+          // then parse the JSON.
+          return NotificationList.fromJson(jsonDecode(response.body));
+        } else {
+          // If the server did not return a 200 OK response,
+          // then throw an exception.
+          throw Exception('Failed to load list');
+        }
       }
+    }catch (e){
+      throw Exception('Failed to load list');
     }
+
    // print(Notif.length);
    // return Notif;
   }
@@ -54,6 +59,11 @@ class _listviewnotificationState extends State<listviewnotification> {
     "assets/baguette.png",
     "assets/carrfour.png",
   ];*/
+  @override
+  void initState() {
+    getnotificationdata();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     //final height = MediaQuery.of(context).size.height;
