@@ -30,15 +30,19 @@ void main()async{
   }
 }*/
 
+
 //check user account status
 Future<Widget> getAuthState()async{
   return  StreamBuilder<User?>(
     stream:_firebaseAuth.authStateChanges(),
     builder: (BuildContext context,snapshot){
-      if(snapshot.hasData){
+      return onbolding();
+      /*if(snapshot.hasData){
         return onbolding();
+
       }
       return profile();
+*/
     }
   );
 

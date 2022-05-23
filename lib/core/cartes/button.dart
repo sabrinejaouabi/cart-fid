@@ -1,15 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ajoutercartes/mon_acceuil.dart';
-import '../scanner/affichescann.dart';
-import '../scanner/scanncode.dart';
-
+import '../profile/profile.dart';
 class btn extends StatefulWidget {
-  const btn({Key? key}) : super(key: key);
+  String? value;
+  btn({Key? key,this.value }) : super(key: key );
+ // const btn({Key? key}) : super(key: key);
   @override
   State<btn> createState() => _btnState();
 }
 class _btnState extends State<btn> {
+  String value_data ="";
+  _scan() async{
+    String result =  await FlutterBarcodeScanner.scanBarcode(
+        "#000000", "cancel", true, ScanMode.BARCODE);
+    (result != "-1" ) ?
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              monacceuil(
+                value: result,
+              ),
+        )) :
+    (){};
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -32,12 +48,15 @@ class _btnState extends State<btn> {
               //alignment: Alignment.center,
               child: InkWell(
                 onTap: () {
+                 /* _scan();
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>affichscann(),
-                   ),
-                   );
+                      context,
+                      MaterialPageRoute(
+                      builder: (context) =>
+                      monacceuil(
+                        value: _data,
+                      )));*/
+                  _scan();
                 },
                 child: Text(
                   'AJOUTER UNE CARTE DE FEDILITÉ',

@@ -1,15 +1,11 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 class mescartes extends StatefulWidget {
-  const mescartes({Key? key}) : super(key: key);
-
+  mescartes({Key? key}) : super(key: key);
   @override
   State<mescartes> createState() => _mescartesState();
 }
-
 class _mescartesState extends State<mescartes> {
   @override
   Widget build(BuildContext context) {
@@ -23,7 +19,6 @@ class _mescartesState extends State<mescartes> {
             Container(
               alignment: Alignment.topLeft,
               margin: EdgeInsets.all(10.0),
-
               child: Text('Mes cartes',textAlign: TextAlign.start,
                 style: GoogleFonts.poppins(
                   textStyle: TextStyle(
@@ -37,6 +32,7 @@ class _mescartesState extends State<mescartes> {
               height: 20,
             ),
             Text("vous n'avez pas encore des cartes ",
+              textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
               textStyle: TextStyle(
                   color: Color(0xFF5D5F6D),

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 class headerprofile extends StatefulWidget {
-  const headerprofile({Key? key}) : super(key: key);
+  headerprofile({Key? key}) : super(key: key);
 
   @override
   State<headerprofile> createState() => _headerprofileState();
 }
-
 class _headerprofileState extends State<headerprofile> {
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class _headerprofileState extends State<headerprofile> {
         children: [
            InkWell(
             onTap: () {
-              Navigator.pop(context);
+              //Navigator.pop(context);
             },
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -41,12 +40,13 @@ class _headerprofileState extends State<headerprofile> {
                       ),
                       backgroundColor: Colors.white,
                       onPressed: () {
-                        Navigator.push(
+                    /*    Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => profile(),
                           ),
-                        );
+                        );*/
+                        Navigator.pop(context);
                       },
                       child: Icon(
                         Icons.arrow_back,

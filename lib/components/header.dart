@@ -1,18 +1,31 @@
 import 'package:cartefid/core/profile/monprofilepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import '../core/ajoutercartes/mon_acceuil.dart';
 import '../core/notification/monnotificationpage.dart';
-import '../core/onbolding.dart';
-import '../core/scanner/affichescann.dart';
-
 class header extends StatefulWidget {
-   const header({Key? key}) : super(key: key);
- 
+  String? value;
+    header({Key? key,this.value}) : super(key: key);
    @override
    State<header> createState() => _headerState();
  }
- 
  class _headerState extends State<header> {
+   String value_data ="";
+   _scan() async{
+     String result =  await FlutterBarcodeScanner.scanBarcode(
+         "#000000", "cancel", true, ScanMode.BARCODE);
+     (result != "-1" ) ?
+     Navigator.push(
+         context,
+         MaterialPageRoute(
+           builder: (context) =>
+               monacceuil(
+                 value: result,
+               ),
+         )) :
+         (){};
+   }
    @override
    Widget build(BuildContext context) {
      final height = MediaQuery.of(context).size.height;
@@ -20,36 +33,34 @@ class header extends StatefulWidget {
        margin: EdgeInsets.symmetric(vertical:20),
        child: Row(
          children: [
-           IconButton(onPressed: (){
-             Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>profilepage(),
-              ),
-              );
-           }, icon:Icon(CupertinoIcons.person_solid,color: Colors.black)),
-           IconButton(onPressed: (){
+           IconButton( icon:Image.asset('assets/profil.png'),
+       onPressed: (){
+         Navigator.push(
+           context,
+           MaterialPageRoute(
+             builder: (context) =>profilepage(),
+           ),
+         );
+       },
+     ),
+           IconButton(icon:Image.asset('assets/notif.png'),
+             onPressed: (){
              Navigator.push(
                context,
                MaterialPageRoute(
                  builder: (context) =>notificationpage(),
                ),
              );
-           }, icon:Icon(CupertinoIcons.bell_fill,color: Colors.black)),
+           },
+           ),
            Spacer(),
            SizedBox(
              height: 20,
            ),
            ElevatedButton(
-             onPressed: (
+             onPressed: () {
+               _scan();
 
-                 ) {
-               Navigator.push(
-                 context,
-                 MaterialPageRoute(
-                   builder: (context) =>affichscann(),
-                 ),
-               );
              },
              child:Icon(Icons.add),
              style: ElevatedButton.styleFrom(

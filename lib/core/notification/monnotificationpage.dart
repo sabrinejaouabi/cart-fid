@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 
 import 'header_notification.dart';
 import 'listview_notification.dart';
-
 class notificationpage extends StatefulWidget {
-  const notificationpage({Key? key}) : super(key: key);
+  notificationpage({Key? key}) : super(key: key);
 
   @override
   State<notificationpage> createState() => _notificationpageState();

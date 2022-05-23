@@ -21,7 +21,7 @@ class _onboldingState extends State<onbolding> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
+                    padding: const EdgeInsets.only(top: 13.0),
                     child: Image.asset('assets/onbording1.png'),
                   ),
 
@@ -32,16 +32,16 @@ class _onboldingState extends State<onbolding> {
                   ),
 
                   Padding(
-                    padding: EdgeInsets.only(top: 10, right: 10, left: 10),
+                    padding: EdgeInsets.only(top:12, right: 10, left: 10),
                     child: Text(
-                        'Avec carteFid, toutes vos cartes sont à un click prés.',
+                        "Avec carteFid, toutes vos cartes\n sont à un click prés.",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.poppins(
                           textStyle: TextStyle(
                               color: Color(0xFF3F414E),
-                              letterSpacing: .5,
+                              //letterSpacing: .5,
                               fontWeight: FontWeight.w500,
-                              fontSize: 16),
+                              fontSize: 18),
                         )),
                   ),
                 ],
@@ -49,13 +49,13 @@ class _onboldingState extends State<onbolding> {
             ),
             Padding(
                 padding:
-                EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
+                EdgeInsets.only(top:25, left: 10, right: 10, bottom: 10),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      height: 48,
+                      height:50,
                       child: RaisedButton(
                         onPressed: () {
                           Navigator.push(
@@ -70,15 +70,17 @@ class _onboldingState extends State<onbolding> {
                           borderRadius:
                           BorderRadius.all((Radius.circular(30.0))),
                         ),
+                        elevation:0,
                         child: Text(
                           "INSCRIPTION ",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                          ),
-                        ),
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                  color: Color(0xFFF6F1FB),
+                                  letterSpacing: .5,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14),
+                            )),
                       ),
                     ),
                     Padding(
@@ -87,7 +89,7 @@ class _onboldingState extends State<onbolding> {
                       child: Column(mainAxisSize: MainAxisSize.min, children: [
                         Container(
                           width: MediaQuery.of(context).size.width,
-                          height: 48,
+                          height: 50,
                           //margin: EdgeInsets.all(12),
                           // padding: EdgeInsets.all(10),
                           child: RaisedButton(
@@ -118,14 +120,14 @@ class _onboldingState extends State<onbolding> {
                             //),
                             child: Text(
                               'CONNEXION',
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  color: Color(0xFF8E97FD),
-                                  fontSize: 14,
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                            ),
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                      color: Color(0xFF8E97FD),
+                                      letterSpacing: .5,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14),
+                                )),
                           ),
                           // style: ButtonStyle(
                           //padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(30.0)),

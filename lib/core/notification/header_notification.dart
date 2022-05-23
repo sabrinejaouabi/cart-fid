@@ -6,11 +6,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../profile/profile.dart';
 class headernotif extends StatefulWidget {
   const headernotif({Key? key}) : super(key: key);
-
   @override
   State<headernotif> createState() => _headernotifState();
 }
-
 class _headernotifState extends State<headernotif> {
   @override
   Widget build(BuildContext context) {
@@ -43,12 +41,13 @@ class _headernotifState extends State<headernotif> {
                       ),
                       backgroundColor: Colors.white,
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pop(context);
+                        /*Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => profile(),
                           ),
-                        );
+                        );*/
                       },
                       child: Icon(
                         Icons.arrow_back,

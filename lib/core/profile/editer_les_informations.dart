@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'monprofilepage.dart';
 class edit_info extends StatefulWidget {
-  const edit_info({Key? key}) : super(key: key);
+   edit_info({Key? key}) : super(key: key);
   @override
   State<edit_info> createState() => _edit_infoState();
 }
@@ -17,7 +17,7 @@ class _edit_infoState extends State<edit_info> {
         children: [
           InkWell(
             onTap: () {
-              Navigator.pop(context);
+              //Navigator.pop(context);
             },
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -39,12 +39,13 @@ class _edit_infoState extends State<edit_info> {
                       ),
                       backgroundColor: Colors.white,
                       onPressed: () {
-                        Navigator.push(
+                        /*Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>profilepage(),
                           ),
-                        );
+                        );*/
+                       Navigator.pop(context);
                       },
                       child: Icon(
                         Icons.arrow_back,

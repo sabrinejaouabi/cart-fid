@@ -1,16 +1,17 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'monprofilepage.dart';
-
 class btn_edit_info extends StatefulWidget {
   const btn_edit_info({Key? key}) : super(key: key);
 
   @override
   State<btn_edit_info> createState() => _btn_edit_infoState();
 }
+TextEditingController _nomprenomController = new TextEditingController();
+TextEditingController date = TextEditingController();
+TextEditingController _numtelController = new TextEditingController();
 
 class _btn_edit_infoState extends State<btn_edit_info> {
   @override
@@ -31,16 +32,24 @@ class _btn_edit_infoState extends State<btn_edit_info> {
           Expanded(
             //flex:6,
               child: Container(
-                //alignment: Alignment.center,
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(
+                    Navigator.pop(context);
+                    /*if (_nomprenomController.text.isEmpty &&date.text.isEmpty&&
+                        _numtelController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('les chapms vide...')));
+                    }*/
+                      //else{
+                  /*  Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>profilepage(),
                       ),
-                    );
-                  },
+                    );*/
+
+                    },
+                  //},
                   child: Text(
                     'Enregistrer',
                     textAlign: TextAlign.center,

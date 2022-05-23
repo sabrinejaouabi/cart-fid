@@ -1,8 +1,9 @@
+import 'package:cartefid/core/cartes/les%20carte.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 class btn_enregister_button extends StatefulWidget {
-  const btn_enregister_button({Key? key}) : super(key: key);
+  btn_enregister_button({Key? key}) : super(key: key);
 
   @override
   State<btn_enregister_button> createState() => _btn_enregister_buttonState();
@@ -31,12 +32,19 @@ class _btn_enregister_buttonState extends State<btn_enregister_button> {
                 //alignment: Alignment.center,
                 child: InkWell(
                   onTap: () {
-                    //Navigator.push(
-                    //  context,
-                    //  MaterialPageRoute(
-                     //   builder: (context) =>monacceuil(),
-                     // ),
-                   // );
+                    /* Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>cartes(),
+                          ),
+                        );*/
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => cartes(),
+                      ),
+                          (route) => false,
+                    );
                   },
                   child: Text(
                     'Enregistrer la carte',

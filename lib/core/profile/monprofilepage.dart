@@ -23,7 +23,8 @@ class _profilepageState extends State<profilepage> {
           child: Column(
             children: [
            // headerprofile(),
-              header(),
+              //header(),
+              headerprofile(),
               SizedBox(
                 height: 10,
               ),
