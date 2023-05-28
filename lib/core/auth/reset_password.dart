@@ -1,5 +1,4 @@
-import 'package:cartefid/core/auth/connexion.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,8 +11,6 @@ class reset_screen extends StatefulWidget {
 TextEditingController _emailController = new TextEditingController();
 
 class _reset_screenState extends State<reset_screen> {
-           //String? _email;
-            final auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(

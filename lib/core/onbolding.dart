@@ -1,5 +1,7 @@
+import 'package:cartefid/core/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/connexion.dart';
 import 'auth/inscription.dart';
 class onbolding extends StatefulWidget {
@@ -8,6 +10,21 @@ class onbolding extends StatefulWidget {
   State<onbolding> createState() => _onboldingState();
 }
 class _onboldingState extends State<onbolding> {
+  late SharedPreferences prefs ;
+  @override
+  void initState() {
+    super.initState();
+    check_if_already_login();
+  }
+  Future<bool> check_if_already_login() async {
+    prefs  = await SharedPreferences.getInstance();
+    if (prefs.getString('user') !=null ) {
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -57,13 +74,27 @@ class _onboldingState extends State<onbolding> {
                       width: MediaQuery.of(context).size.width,
                       height:50,
                       child: RaisedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => inscription(),
-                            ),
-                          );
+                        onPressed: ()async {
+                          await check_if_already_login().then((isLoggedIn){
+                                if (isLoggedIn){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => profile(),
+                                    ),
+                                  );
+
+                                }else{
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => inscription(),
+                                    ),
+                                  );
+                                }
+
+
+                              });
                         },
                         color: Color(0xFF8E97FD),
                         shape: RoundedRectangleBorder(
@@ -94,23 +125,28 @@ class _onboldingState extends State<onbolding> {
                           // padding: EdgeInsets.all(10),
                           child: RaisedButton(
                             elevation: 0,
-                            //Row(
-                            //  mainAxisAlignment: MainAxisAlignment.center,
-                            // children: [
-                            // TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => connexion(),
-                                ),
-                              );
+                            onPressed: ()async {
+                              await check_if_already_login().then((isLoggedIn){
+                                if (isLoggedIn){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => profile(),
+                                    ),
+                                  );
+
+                                }else{
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => connexion(),
+                                    ),
+                                  );
+                                }
+                              });
                             },
                             color: Colors.white,
-                            shape:
-
-                            // MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0),
                               side: BorderSide(
                                 color: Color(0xFF8E97FD),
@@ -129,15 +165,7 @@ class _onboldingState extends State<onbolding> {
                                       fontSize: 14),
                                 )),
                           ),
-                          // style: ButtonStyle(
-                          //padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(30.0)),
-                          //foregroundColor: MaterialStateProperty.all<Color>(Color(0xFF8E97FD)),
                         ),
-                        //          ],
-                        //      ),
-                        //),
-
-// ),
                       ]),
                     ),
                   ],

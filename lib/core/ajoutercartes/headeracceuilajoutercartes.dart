@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../cartes/les carte.dart';
 import '../profile/profile.dart';
 class headeracc extends StatefulWidget {
-   headeracc({Key? key}) : super(key: key);
+  headeracc({Key? key}) : super(key: key);
   @override
   State<headeracc> createState() => _headeraccState();
 }
@@ -18,7 +16,7 @@ class _headeraccState extends State<headeracc> {
         children: [
           InkWell(
             onTap: () {
-             //Navigator.pop(context);
+              //Navigator.pop(context);
             },
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -43,16 +41,9 @@ class _headeraccState extends State<headeracc> {
                        /* Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>cartes(),
+                            builder: (context) =>profile(),
                           ),
                         );*/
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => cartes(),
-                          ),
-                              (route) => false,
-                        );
 
                       },
                       child: Icon(

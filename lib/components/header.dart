@@ -1,3 +1,4 @@
+import 'package:cartefid/core/onbolding.dart';
 import 'package:cartefid/core/profile/monprofilepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -60,7 +61,6 @@ class header extends StatefulWidget {
            ElevatedButton(
              onPressed: () {
                _scan();
-
              },
              child:Icon(Icons.add),
              style: ElevatedButton.styleFrom(

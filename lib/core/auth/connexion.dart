@@ -1,38 +1,36 @@
+import 'dart:convert';
 import 'package:cartefid/core/auth/inscription.dart';
 import 'package:cartefid/core/auth/reset_password.dart';
 import 'package:cartefid/core/auth/signin_google.dart';
 import 'package:cartefid/core/onbolding.dart';
 import 'package:cartefid/core/profile/profile.dart';
-import 'package:cartefid/services/auth_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+import '../../models/user.dart';
+import '../../static/Static_values.dart';
 class connexion extends StatefulWidget {
   const connexion({Key? key}) : super(key: key);
   @override
   State<connexion> createState() => _connexionState();
 }
-//controller le filed text
-Authservices _authservices=new Authservices();
-TextEditingController _emailController = new TextEditingController();
-TextEditingController _passController = new TextEditingController();
-bool _ispassvisible = true;
-
 class _connexionState extends State<connexion> {
+  TextEditingController _emailController =  TextEditingController();
+  TextEditingController _passController =  TextEditingController();
+  bool isLoading=false;
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _emailController.dispose();
+    _passController.dispose();
+    super.dispose();
+  }
   final _formKey = GlobalKey<FormState>();
-  //static final FacebookLogin facebookSignIn = new FacebookLogin();
   @override
   Widget build(BuildContext context) {
-    void dispose() {
-      // Clean up the controller when the widget is disposed.
-      _emailController.dispose();
-      _passController.dispose();
-      super.dispose();
-    }
-    clearText() {
-      _emailController.clear();
-      _passController.clear();
-    }
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -41,7 +39,6 @@ class _connexionState extends State<connexion> {
         child: SafeArea(
           child: Form(
             key: _formKey,
-            // height: height,
             child: SingleChildScrollView(
               child: Stack(
                 children: <Widget>[
@@ -85,7 +82,7 @@ class _connexionState extends State<connexion> {
                                     TextFormField(
                                       validator: (value) {
                                         if (!RegExp(
-                                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                                             .hasMatch(value!)) {
                                           return 'email invalide';
                                         }
@@ -133,7 +130,7 @@ class _connexionState extends State<connexion> {
                                     TextFormField(
                                       validator: (value) {
                                         if (!RegExp(
-                                                r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+                                            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
                                             .hasMatch(value!)) {
                                           return 'Veuillez entrer le mot de passe';
                                         }
@@ -145,7 +142,7 @@ class _connexionState extends State<connexion> {
                                       controller: _passController,
                                       obscureText:true,
                                       decoration: InputDecoration(
-                                      border: OutlineInputBorder(
+                                        border: OutlineInputBorder(
                                           borderSide: BorderSide.none,
                                           borderRadius: BorderRadius.circular(15),
                                         ),
@@ -192,57 +189,23 @@ class _connexionState extends State<connexion> {
                               ],
                             ),
                             child: CupertinoButton(
-                              onPressed: () async{
-                                //_emailController.clear();
-                               // _passController.clear();
-                                /*Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (context) => profile()));*/
-                                Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => profile(),
-                                  ),
-                                      (route) => false,
-                                );
-                             /*   if(_emailController.text.trim().isEmpty||_passController.text.trim().isEmpty){
-                                  final snackBar=SnackBar(
-                                     content:Text('Email/password can\'t be empty'),
-                                  );
-                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              onPressed: (){
+                                if(isLoading)
+                                {
+                                  return;
                                 }
-                                else{
-                                  dynamic credentials=await _authservices.conexionnuser(
-                                      _emailController.text.trim(),
-                                      _passController.text.trim());
-                                  print('credentials are :'+credentials.toString());
-                                  if (credentials==null){
-                                    const snackBar=SnackBar(content: Text('Email/password are invalid'),
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                  }
-                                  else {
-                                    Navigator.pushReplacement(
-                                        context,
-                                        CupertinoPageRoute(
-                                            builder: (context) => profile()));
-                                  }
-
-                                }*/
-                                //print('login email :${_emailController.text}');
-                                //  print('login pass :${_passController.text}');
-                               /* if (_formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('connexion avec succès'),
-                                      duration: const Duration(seconds: 2),
-                                    ),
-                                  );
-                                }*/
+                                if(_emailController.text.isEmpty||_passController.text.isEmpty)
+                                {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Please Fill all fileds")));
+                                  return;
+                                }
+                                login(_emailController.text,_passController.text);
+                                setState(() {
+                                  isLoading=true;
+                                });
                               },
                               child: Text(
-                                'SE CONNECTER',
+                                  'SE CONNECTER',
                                   textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
                                     textStyle: TextStyle(
@@ -259,7 +222,7 @@ class _connexionState extends State<connexion> {
                             ),
                             alignment: Alignment.center,
                             child:TextButton(child:Text(
-                              'Mot de passe oublié ?',
+                                'Mot de passe oublié ?',
                                 textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
                                   textStyle: TextStyle(
@@ -268,13 +231,13 @@ class _connexionState extends State<connexion> {
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14),
                                 )),
-                                onPressed: (){
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => reset_screen()));
+                              onPressed: (){
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => reset_screen()));
 
 
-                                },),
+                              },),
 
                           ),
                           Container(
@@ -321,16 +284,9 @@ class _connexionState extends State<connexion> {
                                     //alignment: Alignment.center,
                                     child: InkWell(
                                       onTap: () {
-                                        //Navigator.push(
-                                        //  context,
-                                        //  MaterialPageRoute(
-                                        //    builder: (context) =>MyApp(),
-                                        // ),
-                                        // );
                                       },
                                       child: Text(
-                                        'CONTINUER AVEC FACEBOOK',
-                                          //textAlign: TextAlign.center,
+                                          'CONTINUER AVEC FACEBOOK',
                                           style: GoogleFonts.poppins(
                                             textStyle: TextStyle(
                                                 color: Color(0xFFF6F1FB),
@@ -351,7 +307,7 @@ class _connexionState extends State<connexion> {
                               vertical: 10,
                             ),
                             decoration: BoxDecoration(
-                                //color: Color(0xffEBEAEC),
+                              //color: Color(0xffEBEAEC),
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(38.0),
                                 ),
@@ -363,7 +319,7 @@ class _connexionState extends State<connexion> {
                                 Expanded(
                                   //flex: 1,
                                   child: Container(
-                                   // alignment: Alignment.center,
+                                    // alignment: Alignment.center,
                                     child: Image.asset('assets/google.png'),
                                   ),
                                 ),
@@ -376,7 +332,7 @@ class _connexionState extends State<connexion> {
                                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInDemo()));
                                       },
                                       child: Text(
-                                        'CONTINUER AVEC GOOGLE',
+                                          'CONTINUER AVEC GOOGLE',
                                           //textAlign: TextAlign.center,
                                           style: GoogleFonts.poppins(
                                             textStyle: TextStyle(
@@ -396,12 +352,12 @@ class _connexionState extends State<connexion> {
                           ),
                           InkWell(
                             onTap: () {
-                               Navigator.push(
-                                 context,
-                                 MaterialPageRoute(
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
                                   builder: (context) => inscription(),
                                 ),
-                               );
+                              );
                               //Navigator.pop(context);
                             },
                             child: Container(
@@ -451,7 +407,6 @@ class _connexionState extends State<connexion> {
                     left: 0,
                     child: InkWell(
                       onTap: () {
-                        //Navigator.pop(context);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
@@ -474,13 +429,6 @@ class _connexionState extends State<connexion> {
                                 backgroundColor: Colors.white,
                                 onPressed: () {
                                   Navigator.pop(context);
-                                 /* Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => onbolding(),
-                                    ),
-                                  );*/
-                                  //Navigator.pop(context);
                                 },
                                 child: Icon(
                                   Icons.arrow_back,
@@ -502,4 +450,48 @@ class _connexionState extends State<connexion> {
       ),
     );
   }
+  void saveUser (User user,String token) async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+    //User.fromJson(jsonDecode(prefs.getString('user')));
+    prefs.setString("user", User().serialize(user));
+    prefs.setString("token", token);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => profile(),
+      ),
+          (route) => false,
+    );
+  }
+  login(email,password) async
+  {
+    setState(() {
+      isLoading=true;
+    });
+    Map data = {
+      'email': email,
+      'password': password
+    };
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+    };
+    print(data.toString());
+    final  response= await http.post(Uri.http(StaticValues.apiUrl,StaticValues.endpointLogin),
+      headers: header,
+      body: jsonEncode(data),
+    );
+    setState(() {
+      isLoading=false;
+    });
+    if (response.statusCode == 200) {
+      Map<String,dynamic>map=jsonDecode(response.body);
+      saveUser(User.fromJson(map["user"]),map["token"]);
+      print('user id is ${User.fromJson(map["user"]).id}');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Please try again!")));
+    }
+  }
+
 }
+

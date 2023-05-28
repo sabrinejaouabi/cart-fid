@@ -34,7 +34,7 @@ class _changer_passState extends State<changer_pass> {
                     Container(
                       child: InkWell(
                         onTap: () {
-                         // Navigator.pop(context);
+                          // Navigator.pop(context);
 
                         },
                         child: Container(
@@ -170,32 +170,32 @@ class _changer_passState extends State<changer_pass> {
                         ],
                       ),
                       child: CupertinoButton(
-                      child: Text(
-                      'Changer mot de passe',
-                     style: GoogleFonts.poppins(
-                      textStyle: TextStyle(
-                      color: Color(0xFFF6F1FB),
-                        letterSpacing: .5,
-                    fontWeight: FontWeight.w500,
-                     fontSize: 14),
-                       )),
-                        onPressed: () {
-                          if (_passController.text.isEmpty &&
-                              _confirmPassController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('les chapms vide...')));
+                          child: Text(
+                              'Changer mot de passe',
+                              style: GoogleFonts.poppins(
+                                textStyle: TextStyle(
+                                    color: Color(0xFFF6F1FB),
+                                    letterSpacing: .5,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14),
+                              )),
+                          onPressed: () {
+                            if (_passController.text.isEmpty &&
+                                _confirmPassController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('les chapms vide...')));
+                            }
+                            else if(_passController.text!=_confirmPassController.text){
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('pass invalide...')));
+                            }
+                            else{
+                              Navigator.push(context, CupertinoPageRoute(
+                                  builder: (context) => profilepage()));
+                            }
                           }
-                          else if(_passController.text!=_confirmPassController.text){
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('pass invalide...')));
-                          }
-                          else{
-                          Navigator.push(context, CupertinoPageRoute(
-                          builder: (context) => profilepage()));
-                          }
-                        }
 
-                    /*if (_formKey.currentState!.validate()) {
+                        /*if (_formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('loading...')),
                       );*/

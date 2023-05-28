@@ -1,19 +1,33 @@
 import 'package:cartefid/core/notification/monnotificationpage.dart';
 import 'package:cartefid/core/onbolding.dart';
 import 'package:cartefid/core/profile/monprofilepage.dart';
-import 'package:cartefid/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 import '../core/ajoutercartes/mon_acceuil.dart';
 class headeracceuil extends StatefulWidget {
-  const headeracceuil({Key? key}) : super(key: key);
+  headeracceuil({Key? key}) : super(key: key);
 
   @override
   State<headeracceuil> createState() => _headeracceuilState();
 }
-Authservices _authservices = new Authservices();
 class _headeracceuilState extends State<headeracceuil> {
+  String value_data ="";
+  _scan() async{
+    String result =  await FlutterBarcodeScanner.scanBarcode(
+        "#000000", "cancel", true, ScanMode.BARCODE);
+    (result != "-1" ) ?
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              monacceuil(
+                value: result,
+              ),
+        )) :
+        (){};
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -46,12 +60,7 @@ class _headeracceuilState extends State<headeracceuil> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>onbolding(),
-                ),
-              );
+              _scan();
             },
             child:Icon(Icons.add),
             style: ElevatedButton.styleFrom(

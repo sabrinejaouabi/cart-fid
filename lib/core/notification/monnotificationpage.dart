@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'header_notification.dart';
 import 'listview_notification.dart';
 class notificationpage extends StatefulWidget {

@@ -1,16 +1,15 @@
+import 'dart:convert';
 import 'package:cartefid/core/auth/connexion.dart';
 import 'package:cartefid/core/auth/signin_google.dart';
-import 'package:cartefid/core/onbolding.dart';
-import 'package:cartefid/core/profile/profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:cartefid/services/auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../../models/end_users.dart';
-import 'dart:async';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-//import 'facebook_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../models/user.dart';
+import '../../static/Static_values.dart';
+import 'package:http/http.dart'as http;
 
 class inscription extends StatefulWidget {
   const inscription({Key? key}) : super(key: key);
@@ -18,22 +17,26 @@ class inscription extends StatefulWidget {
   @override
   State<inscription> createState() => _inscriptionState();
 }
-
-//controller le filed text
-FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-Authservices _authServices = new Authservices();
-TextEditingController _emailController = new TextEditingController();
-TextEditingController _passController = new TextEditingController();
-TextEditingController _nomController = new TextEditingController();
-
 class _inscriptionState extends State<inscription> {
+  var reg=RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+  bool isLoading=false;
+  late String name,prenom,email, password;
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _prenomController = new TextEditingController();
+  TextEditingController _passController = new TextEditingController();
+  TextEditingController _nomController = new TextEditingController();
+  TextEditingController _numcontroller = new TextEditingController();
+  TextEditingController date = TextEditingController();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _emailController.dispose();
+    _prenomController.dispose();
+    _nomController.dispose();
+    _passController.dispose();
+    super.dispose();
+  }
   final _formKey = GlobalKey<FormState>();
-  Enduser endUser = Enduser(
-      username: 'testUser',
-      fullname: 'test user',
-      email: 'testuser@mail.com',
-      phone: '34434',
-      uid: '076665542');
 
   @override
   Widget build(BuildContext context) {
@@ -86,16 +89,6 @@ class _inscriptionState extends State<inscription> {
                                     height: 10,
                                   ),
                                   TextFormField(
-                                    validator: (value) {
-                                      if (!RegExp(r'^[a-z A-Z]+$')
-                                          .hasMatch(value!)) {
-                                        return 'nom invalide';
-                                      }
-                                      if (value.isEmpty) {
-                                        return 'entrer votre nom et prénom';
-                                      }
-                                      return null;
-                                    },
                                     textAlign: TextAlign.start,
                                     obscureText: false,
                                     controller: _nomController,
@@ -104,7 +97,44 @@ class _inscriptionState extends State<inscription> {
                                         borderSide: BorderSide.none,
                                         borderRadius: BorderRadius.circular(15),
                                       ),
-                                      hintText: "Nom et Prénom",
+                                      hintText: "Nom ",
+                                      fillColor: Color(
+                                        0xfff3f3f4,
+                                      ),
+                                      hintStyle: GoogleFonts.poppins(
+                                        color: Color(0xFFA1A4B2),
+                                        textStyle: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          letterSpacing:.5,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      filled: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                vertical: 10,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextFormField(
+                                    textAlign: TextAlign.start,
+                                    obscureText: false,
+                                    controller: _prenomController,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      hintText: "Prénom",
                                       fillColor: Color(
                                         0xfff3f3f4,
                                       ),
@@ -131,17 +161,6 @@ class _inscriptionState extends State<inscription> {
                                     height: 10,
                                   ),
                                   TextFormField(
-                                    validator: (value) {
-                                      if (!RegExp(
-                                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                          .hasMatch(value!)) {
-                                        return 'email invalide';
-                                      }
-                                      if (value.isEmpty) {
-                                        return 'entrer votre adresse email';
-                                      }
-                                      return null;
-                                    },
                                     controller: _emailController,
                                     keyboardType: TextInputType.emailAddress,
                                     obscureText: false,
@@ -177,18 +196,45 @@ class _inscriptionState extends State<inscription> {
                                     height: 10,
                                   ),
                                   TextFormField(
-                                    validator: (value) {
-                                      if (!RegExp(
-                                              r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-                                          .hasMatch(value!)) {
-                                        return 'Veuillez entrer le mot de passe';
-                                      }
-                                      if (value.isEmpty) {
-                                        return 'Entrez un mot de passe valide';
-                                      }
-                                      return null;
-                                    },
-
+                                    maxLength: 8,
+                                    keyboardType: TextInputType.number,
+                                    obscureText: false,
+                                    controller: _numcontroller,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                                    ],
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      hintText: "Numéro de téléphone",
+                                      fillColor: Color(
+                                        0xfff3f3f4,
+                                      ),
+                                      hintStyle: GoogleFonts.poppins(
+                                        color: Color(0xFFA1A4B2),
+                                        textStyle: TextStyle(
+                                          fontWeight: FontWeight.w300,
+                                          letterSpacing:.5,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      filled: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  TextFormField(
                                     obscureText: true,
                                     controller: _passController,
                                     decoration: InputDecoration(
@@ -200,14 +246,14 @@ class _inscriptionState extends State<inscription> {
                                       fillColor: Color(
                                         0xfff3f3f4,
                                       ),
-                                        hintStyle: GoogleFonts.poppins(
-                                          color: Color(0xFFA1A4B2),
-                                          textStyle: TextStyle(
+                                      hintStyle: GoogleFonts.poppins(
+                                        color: Color(0xFFA1A4B2),
+                                        textStyle: TextStyle(
                                           fontWeight: FontWeight.w300,
                                           letterSpacing:.5,
                                           fontSize: 16,
                                         ),
-                                        ),
+                                      ),
                                       filled: true,
                                     ),
                                   ),
@@ -219,6 +265,7 @@ class _inscriptionState extends State<inscription> {
                         SizedBox(
                           height: 20,
                         ),
+
                         Container(
                           width: MediaQuery.of(
                             context,
@@ -240,36 +287,40 @@ class _inscriptionState extends State<inscription> {
                             ],
                           ),
                           child: CupertinoButton(
-                            onPressed: () async {
-                              if (_nomController.text.trim().isNotEmpty &&
-                                  _emailController.text.trim().isNotEmpty &&
-                                  _passController.text.trim().isNotEmpty) {
-                                dynamic credentials =
-                                    await _authServices.inscriptionnuser(
-
-                                     _emailController.text.trim(),
-                                      _passController.text.trim(),
-                                     // _nomController.text.trim(),
-                                );
-                                if (credentials == null) {
-                                  const snackBar = SnackBar(
-                                    content: Text('Email/Password are invalid'),
-                                  );
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(snackBar);
-                                } else {
-                                  _authServices
-                                      .createUserDocument(
-                                          _firebaseAuth.currentUser!.uid, endUser)
-                                      .then((value) =>  Navigator.pushReplacement(
-                                      context,
-                                      CupertinoPageRoute(
-                                          builder: (context) => connexion())));
-                                }
+                            onPressed: ()  {
+                              if(isLoading)
+                              {
+                                return;
                               }
+                              if(_nomController.text.isEmpty)
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Please Enter Name")));
+                                return;
+                              }
+                              if(_prenomController.text.isEmpty)
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Please Enter prenom")));
+                                return;
+                              }
+                              if(!reg.hasMatch(_emailController.text))
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Enter Valid Email")));
+                                return;
+                              }
+                              if(_numcontroller.text.isEmpty)
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Please Entre your nomber phone")));
+                                return;
+                              }
+                              if(_passController.text.isEmpty||_passController.text.length<6)
+                              {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Password should be min 6 characters")));
+                                return;
+                              }
+                              signup(_nomController.text,_prenomController.text,_emailController.text,_passController.text,_numcontroller.text);
                             },
                             child: Text(
-                              'COMMENCER',
+                                'COMMENCER',
                                 style: GoogleFonts.poppins(
                                   textStyle: TextStyle(
                                       color: Color(0xFFF6F1FB),
@@ -324,21 +375,12 @@ class _inscriptionState extends State<inscription> {
                                   decoration: BoxDecoration(),
                                   child: InkWell(
                                     onTap: () {
-                                      Future<UserCredential> signInWithFacebook() async {
-                                        // Trigger the sign-in flow
-                                        final LoginResult loginResult = await FacebookAuth.instance.login();
-                                        // Create a credential from the access token
-                                        final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-                                        // Once signed in, return the UserCredential
-                                        return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-                                      }
-                                     // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>fb(plugin: plugin)));
-                                      //
+
                                     },
                                     //  alignment: Alignment.center,
                                     child: Text(
-                                      'CONTINUER AVEC FACEBOOK',
-                                      //textAlign: TextAlign.center,
+                                        'CONTINUER AVEC FACEBOOK',
+                                        //textAlign: TextAlign.center,
                                         style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
                                               color: Color(0xFFF6F1FB),
@@ -360,7 +402,7 @@ class _inscriptionState extends State<inscription> {
                             vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                              //color: Color(0xffEBEAEC),
+                            //color: Color(0xffEBEAEC),
                               borderRadius: BorderRadius.all(
                                 Radius.circular(38.0),
                               ),
@@ -381,12 +423,12 @@ class _inscriptionState extends State<inscription> {
                                 child: Container(
                                   child: InkWell(
                                     onTap: () {
-                                       Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInDemo()));
+                                     // Navigator.of(context).push(MaterialPageRoute(builder: (context)=>SignInDemo()));
                                     },
                                     // alignment: Alignment.center,
                                     child: Text(
-                                      'CONTINUER AVEC GOOGLE',
-                                      //textAlign: TextAlign.center,
+                                        'CONTINUER AVEC GOOGLE',
+                                        //textAlign: TextAlign.center,
                                         style: GoogleFonts.poppins(
                                           textStyle: TextStyle(
                                               color: Color(0xFF3F414E),
@@ -459,7 +501,7 @@ class _inscriptionState extends State<inscription> {
                   left: 0,
                   child: InkWell(
                     onTap: () {
-                     //Navigator.pop(context);
+                      //Navigator.pop(context);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -482,7 +524,7 @@ class _inscriptionState extends State<inscription> {
                               backgroundColor: Colors.white,
                               onPressed: () {
                                 Navigator.pop(context);
-                               /* Navigator.push(
+                                /* Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => onbolding(),
@@ -508,4 +550,63 @@ class _inscriptionState extends State<inscription> {
       ),
     );
   }
+
+  void saveUser (User user,String token) async {
+    // Obtain shared preferences.
+    final prefs = await SharedPreferences.getInstance();
+    //User.fromJson(jsonDecode(prefs.getString('user')));
+    prefs.setString("user", User().serialize(user));
+    prefs.setString("token", token);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => connexion(),
+      ),
+    );
+  }
+
+  signup(name,prenom,email,password,phone) async
+  {
+    setState(() {
+      isLoading=true;
+    });
+    print("Calling");
+
+    Map data = {
+      'name': name,
+      'prenom':prenom,
+      'email': email,
+      'phone':phone,
+      'password': password
+    };
+    Map<String, String> header = {
+      'Content-Type': 'application/json',
+    };
+    print(data.toString());
+    final  response= await http.post(Uri.http(StaticValues.apiUrl,StaticValues.endpointSingUp),
+      headers: header,
+      body: jsonEncode(data),
+    );
+    setState(() {
+      isLoading=false;
+    });
+    if (response.statusCode == 200) {
+      Map<String,dynamic> map=jsonDecode(response.body);
+      saveUser(User.fromJson(map["user"]),map["token"]);
+
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content:Text("Please Try again")));
+    }
+
+  }
+
+/* savePref( String nom,String prenom, String email,String password,) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("nom",nom);
+    prefs.setString("prenom", prenom);
+    prefs.setString("email", email);
+    prefs.setString("password",password);
+    prefs.commit();
+
+  }*/
 }

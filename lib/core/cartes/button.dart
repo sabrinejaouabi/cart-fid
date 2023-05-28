@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../ajoutercartes/mon_acceuil.dart';
-import '../profile/profile.dart';
+
 class btn extends StatefulWidget {
   String? value;
   btn({Key? key,this.value }) : super(key: key );
@@ -48,14 +48,6 @@ class _btnState extends State<btn> {
               //alignment: Alignment.center,
               child: InkWell(
                 onTap: () {
-                 /* _scan();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                      builder: (context) =>
-                      monacceuil(
-                        value: _data,
-                      )));*/
                   _scan();
                 },
                 child: Text(

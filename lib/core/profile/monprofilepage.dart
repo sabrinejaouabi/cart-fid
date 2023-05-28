@@ -3,6 +3,7 @@ import 'package:cartefid/core/profile/formprofile.dart';
 import 'package:cartefid/core/profile/headerprofile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../components/header.dart';
 class profilepage extends StatefulWidget {
@@ -11,7 +12,6 @@ class profilepage extends StatefulWidget {
   @override
   State<profilepage> createState() => _profilepageState();
 }
-
 class _profilepageState extends State<profilepage> {
   @override
   Widget build(BuildContext context) {
@@ -22,15 +22,13 @@ class _profilepageState extends State<profilepage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-           // headerprofile(),
-              //header(),
               headerprofile(),
               SizedBox(
                 height: 10,
               ),
               formprofil(),
               SizedBox(
-                height: 180,
+                height: 100,
               ),
               buttnprofile(),
 

@@ -11,30 +11,30 @@ class _saisir_nom_carteState extends State<saisir_nom_carte> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Container(
-    padding: EdgeInsets.all(10),
-    margin:EdgeInsets.all(20),
+      padding: EdgeInsets.all(10),
+      margin:EdgeInsets.all(20),
       decoration:  BoxDecoration(
           border: Border.all(width:1, color: Color(0xFFE5E5E5)),
-         borderRadius: BorderRadius.circular(34.0)
+          borderRadius: BorderRadius.circular(34.0)
       ),
-          child:TextFormField(
-            textAlign: TextAlign.start,
-            obscureText: false,
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              fillColor: Colors.white,
-              hintText: "Saisissez le nom de la carte",
-              hintStyle: GoogleFonts.poppins(
-                color: Color(0xFFA1A4B2),
-                fontWeight: FontWeight.w400,
-                letterSpacing: .5,
-                fontSize: 12,
-              ),
-              filled: true,
-            ),
+      child:TextFormField(
+        textAlign: TextAlign.start,
+        obscureText: false,
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          fillColor: Colors.white,
+          hintText: "Saisissez le nom de la carte",
+          hintStyle: GoogleFonts.poppins(
+            color: Color(0xFFA1A4B2),
+            fontWeight: FontWeight.w400,
+            letterSpacing: .5,
+            fontSize: 12,
           ),
+          filled: true,
+        ),
+      ),
 
-      );
+    );
 
 
   }

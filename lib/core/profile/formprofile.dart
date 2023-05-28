@@ -1,36 +1,51 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../models/user.dart';
 class formprofil extends StatefulWidget {
-  const formprofil({Key? key}) : super(key: key);
-
+   formprofil({Key? key}) : super(key: key);
   @override
   State<formprofil> createState() => _formprofilState();
 }
 class _formprofilState extends State<formprofil> {
-  TextEditingController date = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  final myController = TextEditingController();
+  TextEditingController _emailController =  TextEditingController();
+  TextEditingController _nomcontroller =  TextEditingController();
+  TextEditingController _prenomcontroller =  TextEditingController();
+  TextEditingController _numcontroller =  TextEditingController();
+  late SharedPreferences prefs ;
   @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    myController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    initial();
   }
+  void initial() async {
+    prefs= await SharedPreferences.getInstance();
+    setState(() {
+      User user = User.fromJson(jsonDecode(prefs.getString('user')!)) ;
+     _nomcontroller.text= user.fname?? "";
+     _prenomcontroller.text= user.lname?? "";
+     _emailController.text= user.email?? "";
+     _numcontroller.text=user.phone??"";
+    });
+  }
+  final _formKey = GlobalKey<FormState>();
+  @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Form(
       key: _formKey,
       child:Column(
         children: [
-          //nom et prenom
+          //nom
           Container(
             width: 341,
             child: TextFormField(
               keyboardType: TextInputType.text,
+              controller:_nomcontroller,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zá-úÁ-ÚwÀ-Üà-øoù-ÿŒœ ]+|\s')),
               ],
@@ -38,7 +53,7 @@ class _formprofilState extends State<formprofil> {
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Color(0xFFE6E6E6)),
                 ),
-                labelText: 'Nom et Prénom',
+                labelText: 'Nom',
                 labelStyle:GoogleFonts.poppins(
                     textStyle:TextStyle(
                         color: Color(0xFFC0C2CA),
@@ -53,11 +68,39 @@ class _formprofilState extends State<formprofil> {
           SizedBox(
             height:20,
           ),
+          Container(
+            width: 341,
+            child: TextFormField(
+              keyboardType: TextInputType.text,
+              controller:_prenomcontroller,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Zá-úÁ-ÚwÀ-Üà-øoù-ÿŒœ ]+|\s')),
+              ],
+              decoration: InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFE6E6E6)),
+                ),
+                labelText: 'Prénom',
+                labelStyle:GoogleFonts.poppins(
+                  textStyle:TextStyle(
+                      color: Color(0xFFC0C2CA),
+                      fontWeight: FontWeight.w400,
+                      fontSize:12
+                  ),
+                ),
+              ),
+
+            ),
+          ),
+          SizedBox(
+            height:20,
+          ),
           //adresse mail
           Container(
             width: 341,
             child: TextFormField(
               keyboardType: TextInputType.emailAddress,
+              controller: _emailController,
               decoration: InputDecoration(
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Color(0xFFE6E6E6)),
@@ -84,6 +127,7 @@ class _formprofilState extends State<formprofil> {
               maxLength: 8,
               maxLengthEnforced: true,
               keyboardType: TextInputType.phone,
+              controller: _numcontroller,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
               ],
@@ -92,7 +136,6 @@ class _formprofilState extends State<formprofil> {
                   borderSide: BorderSide(color: Color(0xFFE6E6E6)),
                 ),
                 labelText: 'Numero de tèléphone',
-
                 labelStyle:GoogleFonts.poppins(
                   textStyle:TextStyle(
                       color: Color(0xFFC0C2CA),
@@ -106,48 +149,6 @@ class _formprofilState extends State<formprofil> {
           ),
           SizedBox(
             height: 20,
-          ),
-          //date
-          Container(
-            width: 341,
-            child: TextFormField(
-              controller: date,
-              readOnly: true,
-              decoration: InputDecoration(
-                enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Color(0xFFE6E6E6)),
-                ),
-                labelText: 'Date de naissance',
-                labelStyle:GoogleFonts.poppins(
-                  textStyle:TextStyle(
-                      color: Color(0xFFC0C2CA),
-                      fontWeight: FontWeight.w400,
-                      fontSize:12
-                  ),
-                ),
-              ),
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    //DateTime.now() - not to allow to choose before today.
-                    lastDate: (DateTime.now())
-                );
-                if(pickedDate != null ){
-                  print(pickedDate);  //pickedDate output format => 2021-03-10 00:00:00.000
-                  String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                  print(formattedDate); //formatted date output using intl package =>  2021-03-16
-                  //you can implement different kind of Date Format here according to your requirement
-
-                  setState(() {
-                    date.text = formattedDate; //set output date to TextField value.
-                  });
-                }else{
-                  print("Date is not selected");
-                }
-              },
-            ),
           ),
         ],
       ),
