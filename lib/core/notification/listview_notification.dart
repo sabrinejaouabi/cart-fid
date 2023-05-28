@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -251,7 +251,7 @@ showDialogFunc(BuildContext context, name, data, descr) {
         );
       });
 }
-=======
+/*
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -485,3 +485,4 @@ showDialogFunc(BuildContext context, img, name,data, descr) {
 
 
 >>>>>>> a2c48898243e2cf7152b014143be4894cde7122c
+*/
